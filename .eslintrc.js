@@ -1,7 +1,8 @@
 module.exports = {
     env: {
         es2021: true,
-        node: true
+        node: true,
+        browser: true
     },
     extends: [
         'eslint:recommended',
@@ -16,6 +17,7 @@ module.exports = {
     },
     plugins: ['@typescript-eslint', 'prettier'],
     rules: {
-        'no-console': 1
+        'no-console': 1,
+        '@typescript-eslint/no-explicit-any': 0
     }
 };

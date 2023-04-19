@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Basic notification adder</title>
+</head>
+
+<body>
+
+	<button class="hidden push-notif-button" onclick="subscribeToPush()">Subscribe to push notification</button>
+
+	<style>
+		.hidden::after {
+			content: '(technically disabled)'
+		}
+	</style>
+
+	<script>
+		// Service workers
+		const sw = true;
+		if ("serviceWorker" in navigator) {
+			if (sw) {
+				navigator.serviceWorker.register("/sw.js").then(
+					() => { },
+					(err) => {
+						console.error(err);
+					}
+				);
+			} else {
+				navigator.serviceWorker.getRegistrations().then(function (registrations) {
+					for (const registration of registrations) {
+						registration.unregister();
+					}
+				});
+			}
+		}
+
+	</script>
+
+	<script>
+
+		const host = '//localhost:8080'
+
+		if ("Notification" in window && Notification.permission === "default") {
+			document.querySelector(".push-notif-button").classList.remove("hidden");
+		}
+
+		async function subscribeToPush() {
+			const button = document.querySelector(".push-notif-button");
+			if (window.Notification) {
+				if (Notification.permission !== "granted") {
+					await new Promise((resolve) => {
+						button.textContent = "Please hold!...";
+						Notification.requestPermission(resolve).catch((err) => {
+							alert(err);
+							resolve(err);
+						});
+					});
+				}
+				if (Notification.permission === "granted") {
+					doSubscribe();
+				} else {
+					alert(Notification.permission)
+					button.classList.add("hidden");
+				}
+			}
+		}
+
+		function doSubscribe() {
+			console.log('DoSubscribe')
+			const button = document.querySelector(".push-notif-button");
+			getSubscriptionObject().then((obj) => {
+				subscribe(obj).then(async (res) => {
+					if (res.ok) {
+						button.classList.add("hidden");
+						console.log(await res.json());
+					} else {
+						res.json().then((d) => alert(d.message));
+					}
+				});
+			});
+		}
+
+		// Generate subscription object
+		async function getSubscriptionObject() {
+			console.log('get obj')
+
+			// Get public vapid key
+			const publicVapidKeyRes = await fetch(host + '/get-public-vapid-key').then(res => res.json())
+			const publicVapidKey = publicVapidKeyRes.data;
+
+			// Create worker
+			const worker = (await navigator.serviceWorker.getRegistrations())[0];
+			return await worker.pushManager
+				.subscribe({
+					userVisibleOnly: true,
+					applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
+				})
+				.catch(function (err) {
+					alert(err);
+				});
+		}
+
+		// Send subscription to server
+		function subscribe(subscription) {
+			console.log('subscribe')
+			return fetch(host + "/subscribe", {
+				method: "POST",
+				body: JSON.stringify({
+					subscription,
+					topic: prompt('What topic?')
+				}),
+				headers: {
+					"content-type": "application/json",
+				},
+			}).catch(function (err) {
+				console.error(err);
+			});
+		}
+
+		// Decoder base64 to uint8
+		function urlBase64ToUint8Array(base64String) {
+			const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+			const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+			const rawData = window.atob(base64);
+			const outputArray = new Uint8Array(rawData.length);
+			for (let i = 0; i < rawData.length; ++i) {
+				outputArray[i] = rawData.charCodeAt(i);
+			}
+			return outputArray;
+		}
+	</script>
+</body>
+
+</html>
