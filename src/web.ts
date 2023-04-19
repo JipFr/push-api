@@ -2,6 +2,7 @@ import express from 'express';
 import db from './db';
 import cors from 'cors';
 import bodyParser from 'body-parser';
+import { cleanTopic } from './push';
 
 const app = express();
 
@@ -16,9 +17,7 @@ app.get('/get-public-vapid-key', (req, res) => {
 
 app.post('/subscribe', (req, res) => {
     const body = req.body;
-    const topic = body.topic.replace(/\./g, '_').trim();
-
-    console.log(body);
+    const topic = cleanTopic(body.topic);
 
     if (!body?.subscription?.endpoint) {
         res.status(403);
@@ -29,7 +28,7 @@ app.post('/subscribe', (req, res) => {
         return; // There should probably be more checks here, huh
     }
 
-    if (!topic) {
+    if (!topic || topic.length === 0) {
         res.status(403);
         res.json({
             status: 403,

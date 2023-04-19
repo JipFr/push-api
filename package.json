@@ -5,6 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "start": "ts-node .",
+    "push": "ts-node src/push/send-demo",
     "lint": "eslint"
   },
   "keywords": [],

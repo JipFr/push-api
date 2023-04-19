@@ -9,14 +9,20 @@ export function configure() {
     }
 }
 
+export function cleanTopic(str: string) {
+    return str.replace(/\./g, '_').trim();
+}
+
 export async function sendPushNotification(body: {
     title?: string;
     body?: string;
     badgeCount?: number;
+    topic: string;
 }) {
     if (!body.title) throw new Error("You can't make a push notification without a title");
 
-    const clients = db.get('push-clients') || [];
+    const clients = db.get(`clients.topics.${cleanTopic(body.topic)}`);
+    if (!clients) throw new Error('No clients for topic ' + cleanTopic(body.topic));
 
     for (const { subscription } of clients) {
         const payload = JSON.stringify({
@@ -31,6 +37,6 @@ export async function sendPushNotification(body: {
             db.get('vapidPrivate')
         );
 
-        await webPush.sendNotification(subscription, payload);
+        await webPush.sendNotification(subscription, payload).catch(() => null);
     }
 }
