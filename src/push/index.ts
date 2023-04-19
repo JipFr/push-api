@@ -27,7 +27,7 @@ export async function sendPushNotification(body: {
     if (!clients) throw new Error('No clients for topic ' + cleanTopic(body.topic));
 
     console.info(
-        `1 Sending notification to ${clients.length} clients at ${toReadableDate()}: ${body.title}`
+        `Sending notification to ${clients.length} clients at ${toReadableDate()}: ${body.title}`
     );
 
     for (const { subscription } of clients) {
@@ -43,8 +43,10 @@ export async function sendPushNotification(body: {
             db.get('vapidPublic'),
             db.get('vapidPrivate')
         );
-
-        await webPush.sendNotification(subscription, payload).catch(() => null);
+        await webPush
+            .sendNotification(subscription, payload)
+            .then(console.info)
+            .catch(console.error);
     }
 
     return {
