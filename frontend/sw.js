@@ -3,7 +3,7 @@ self.addEventListener('push', (event) => {
     const data = event.data.json();
     if (typeof data?.title === 'string') {
         self.registration.showNotification(data.title, {
-            body: data.body
+            ...data
         });
     }
     if ('setAppBadge' in navigator && typeof data.badgeCount === 'number') {

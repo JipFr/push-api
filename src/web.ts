@@ -59,6 +59,7 @@ app.get('/send-notification', async (req, res) => {
     const topic = ((req.query.topic as string) || '').trim();
     const title = ((req.query.title as string) || '').trim();
     const body = ((req.query.body as string) || '').trim();
+    const icon = ((req.query.icon as string) || '').trim();
     const at = ((req.query.at as string) || '').trim();
 
     const badgeNum = Number((req.query.body as string).trim() || NaN);
@@ -106,7 +107,8 @@ app.get('/send-notification', async (req, res) => {
                     topic,
                     title,
                     body,
-                    badgeCount
+                    badgeCount,
+                    icon
                 }))
             };
         } catch (err) {

@@ -22,7 +22,7 @@
 	</style>
 
 	<script>
-		const host = '//localhost:8080' // Make this the API host
+		const host = '//swift-suns-visit-77-170-152-249.loca.lt' // Make this the API host
 
 		// Service workers
 		const sw = true;
@@ -47,12 +47,13 @@
 			const topic = encodeURIComponent(prompt("Topic"))
 			const title = encodeURIComponent(prompt("Title"))
 			const body = encodeURIComponent(prompt("Body"))
+			const icon = "https://jipfr.nl/jip-head.png"
 
 			let now = new Date()
 			now.setTime(now.getTime() + 1e3 * 60 * 2)
 			const at = prompt("At? Enter falsy value") ? now.toISOString() : ''
 
-			await fetch(`${host}/send-notification?topic=${topic}&title=${title}&body=${body}${at ? `&at=${at}` : ''}`)
+			await fetch(`${host}/send-notification?topic=${topic}&title=${title}&icon=${icon}&body=${body}${at ? `&at=${at}` : ''}`)
 		}
 
 	</script>

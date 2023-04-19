@@ -15,6 +15,7 @@ export interface Notification {
     data: {
         title: string;
         body?: string;
+        icon?: string;
         badgeCount?: number;
         topic: string;
     };
