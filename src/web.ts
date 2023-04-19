@@ -164,5 +164,7 @@ app.get('/remove-notification', async (req, res) => {
 });
 
 export function startServer() {
-    app.listen(8080);
+    app.listen(8080, () => {
+        console.info('Listening on port 8080');
+    });
 }
