@@ -12,6 +12,10 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+app.get('/', (req, res) => {
+    res.redirect('https://github.com/JipFr/push-api');
+});
+
 app.get('/get-public-vapid-key', (req, res) => {
     res.json({
         data: db.get('vapidPublic')
