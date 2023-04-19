@@ -49,11 +49,12 @@ function setTimeouts() {
 
                 // Remove from array
                 remove(notif.id);
-            }, Math.max(0, timeoutInMs))
+            }, Math.min(Math.max(0, timeoutInMs), 2147483646))
         );
     }
 }
 
 setTimeouts();
+setInterval(setTimeouts, 60e3 * 15);
 
 export default { add, remove };

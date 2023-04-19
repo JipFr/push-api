@@ -66,7 +66,7 @@ app.get('/send-notification', async (req, res) => {
     const icon = ((req.query.icon as string) || '').trim();
     const at = ((req.query.at as string) || '').trim();
 
-    const badgeNum = Number((req.query.body as string).trim() || NaN);
+    const badgeNum = Number(((req.query.body as string) || '').trim() || NaN);
     const badgeCount = Number.isNaN(badgeNum) ? badgeNum : undefined;
 
     if (at && !new Date(at)) {
@@ -149,22 +149,36 @@ app.get('/get-notifications', async (req, res) => {
 
 app.get('/remove-notification', async (req, res) => {
     const id = cleanTopic((req.query.id as string) || '');
+    const topic = cleanTopic((req.query.topic as string) || '');
 
-    if (!id) {
+    if (!id && !topic) {
         res.status(403);
         res.json({
             status: 403,
-            message: 'Missing id'
+            message: 'Topic or ID required'
         });
         return;
     }
 
-    const { success } = notificationScheduler.remove(id);
+    if (id) {
+        const { success } = notificationScheduler.remove(id);
 
-    res.json({
-        status: success ? 200 : 404,
-        message: success ? 'Removed notification' : 'Unable to find notification with id'
-    });
+        res.json({
+            status: success ? 200 : 404,
+            message: success ? 'Removed notification' : 'Unable to find notification with id'
+        });
+    } else {
+        let notifications: NotifWithId[] = db.get('notifications') || [];
+        const before = notifications.length;
+        notifications = notifications.filter((t) => t.topic !== topic);
+        const diff = before - notifications.length;
+        db.set('notifications', notifications);
+
+        res.json({
+            status: 200,
+            message: `Removed ${diff} notifications`
+        });
+    }
 });
 
 export function startServer() {
