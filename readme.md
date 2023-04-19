@@ -2,6 +2,8 @@
 
 Simple push notification manager I can implement in my apps. Yay.
 
+Add `port` to environment variables to override default port 8080
+
 ---
 
 ### Endpoints
