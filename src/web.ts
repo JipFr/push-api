@@ -3,6 +3,7 @@ import db from './db';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import { cleanTopic } from './push';
+import { sendPushNotification } from './push';
 
 const app = express();
 
@@ -50,6 +51,45 @@ app.post('/subscribe', (req, res) => {
     res.send({
         status: 200
     });
+});
+
+app.get('/send-notification', async (req, res) => {
+    const topic = ((req.query.topic as string) || '').trim();
+    const title = ((req.query.title as string) || '').trim();
+    const body = ((req.query.body as string) || '').trim();
+    const badgeCount = Number((req.query.body as string) || '') || undefined;
+
+    if (!title || !topic) {
+        res.status(403);
+        res.json({
+            status: 403,
+            message: `Missing ${!topic ? 'topic' : 'title'}` // Clever eh
+        });
+        return;
+    }
+
+    let data = {
+        status: 200,
+        message: ''
+    };
+    try {
+        data = {
+            ...data,
+            ...(await sendPushNotification({
+                topic,
+                title,
+                body,
+                badgeCount
+            }))
+        };
+    } catch (err) {
+        data = {
+            status: 500,
+            message: err as string
+        };
+    }
+
+    res.json(data);
 });
 
 export function startServer() {

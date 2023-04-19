@@ -39,4 +39,8 @@ export async function sendPushNotification(body: {
 
         await webPush.sendNotification(subscription, payload).catch(() => null);
     }
+
+    return {
+        clients: clients.length
+    };
 }
