@@ -6,6 +6,7 @@ import { cleanTopic } from './push';
 import { sendPushNotification } from './push';
 import notificationScheduler from './scheduler';
 import { NotifWithId } from './types';
+import { toReadableDate } from './util';
 
 const app = express();
 
@@ -54,6 +55,8 @@ app.post('/subscribe', (req, res) => {
     db.set(dbKey, clients);
     db.store(false);
 
+    console.info(`New client subscribed to topic "${topic}" at ${toReadableDate()}`);
+
     res.send({
         status: 200
     });
@@ -92,6 +95,7 @@ app.get('/send-notification', async (req, res) => {
         message: ''
     };
     if (at) {
+        console.info(`Schedule notification in topic "${topic}" for ${toReadableDate()}: ${title}`);
         data.message = 'Scheduled notification';
         notificationScheduler.add({
             at,
@@ -159,6 +163,8 @@ app.get('/remove-notification', async (req, res) => {
         });
         return;
     }
+
+    console.info(`Removing notifications with ${id ? 'ID' : 'topic'} ${id || topic}`);
 
     if (id) {
         const { success } = notificationScheduler.remove(id);

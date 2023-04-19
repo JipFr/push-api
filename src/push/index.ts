@@ -1,5 +1,6 @@
 import db from '../db';
 import webPush from 'web-push';
+import { toReadableDate } from '../util';
 
 export function configure() {
     if (!db.get('vapidPublic') || !db.get('vapidPrivate')) {
@@ -24,6 +25,10 @@ export async function sendPushNotification(body: {
 
     const clients = db.get(`clients.topics.${cleanTopic(body.topic)}`);
     if (!clients) throw new Error('No clients for topic ' + cleanTopic(body.topic));
+
+    console.info(
+        `1 Sending notification to ${clients.length} clients at ${toReadableDate()}: ${body.title}`
+    );
 
     for (const { subscription } of clients) {
         const payload = JSON.stringify({
