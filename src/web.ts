@@ -95,7 +95,9 @@ app.get('/send-notification', async (req, res) => {
         message: ''
     };
     if (at) {
-        console.info(`Schedule notification in topic "${topic}" for ${toReadableDate()}: ${title}`);
+        console.info(
+            `Schedule notification in topic "${topic}" for ${toReadableDate(at)}: ${title}`
+        );
         data.message = 'Scheduled notification';
         notificationScheduler.add({
             at,
