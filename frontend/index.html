@@ -3,6 +3,11 @@
 
 <head>
 	<title>Basic notification adder</title>
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="viewport"
+		content="width=device-width, initial-scale=1, user-scalable=1, minimal-ui, viewport-fit=cover">
 </head>
 
 <body>
@@ -17,7 +22,7 @@
 	</style>
 
 	<script>
-		const host = '//localhost:8080'
+		const host = '//localhost:8080' // Make this the API host
 
 		// Service workers
 		const sw = true;
@@ -43,7 +48,11 @@
 			const title = encodeURIComponent(prompt("Title"))
 			const body = encodeURIComponent(prompt("Body"))
 
-			await fetch(`${host}/send-notification?topic=${topic}&title=${title}&body=${body}`)
+			let now = new Date()
+			now.setTime(now.getTime() + 1e3 * 60 * 2)
+			const at = prompt("At? Enter falsy value") ? now.toISOString() : ''
+
+			await fetch(`${host}/send-notification?topic=${topic}&title=${title}&body=${body}${at ? `&at=${at}` : ''}`)
 		}
 
 	</script>

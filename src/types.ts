@@ -12,7 +12,12 @@ export interface Database {
 export interface Notification {
     at: string;
     topic: string;
-    data: unknown;
+    data: {
+        title: string;
+        body?: string;
+        badgeCount?: number;
+        topic: string;
+    };
 }
 
 export interface PushClient {
@@ -25,3 +30,5 @@ export interface PushClient {
         };
     };
 }
+
+export type NotifWithId = Notification & { id: string };
