@@ -43,10 +43,7 @@ export async function sendPushNotification(body: {
             db.get('vapidPublic'),
             db.get('vapidPrivate')
         );
-        await webPush
-            .sendNotification(subscription, payload)
-            .then(console.info)
-            .catch(console.error);
+        await webPush.sendNotification(subscription, payload).catch(() => null);
     }
 
     return {
