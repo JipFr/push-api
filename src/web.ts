@@ -12,10 +12,7 @@ const app = express();
 
 app.use(cors());
 app.use(bodyParser.json());
-
-app.get('/', (_, res) => {
-    res.redirect('https://github.com/JipFr/push-api');
-});
+app.use(express.static('frontend'));
 
 app.get('/get-public-vapid-key', (_, res) => {
     res.json({
