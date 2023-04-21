@@ -16,51 +16,70 @@
 
 	<div class="container">
 
+		<button class="hidden push-notif-button" onclick="subscribeToPush()">Subscribe to new topic</button>
+
+		<form onsubmit="sendForm(event); return false;">
+			<fieldset>
+				<legend>Send notification</legend>
+				<div class="fields">
+					<div class="field">
+						<label>
+							<p>Topic</p>
+							<input id="topic" type="text" value="any" required />
+						</label>
+					</div>
+					<div class="field">
+						<label>
+							<p>Title</p>
+							<input id="title" type="text" value="My Title" required />
+						</label>
+					</div>
+					<div class="field">
+						<label>
+							<p>Body</p>
+							<input id="body" type="text" value="My body" />
+						</label>
+					</div>
+					<div class="field">
+						<label>
+							<p>Icon</p>
+							<input id="icon" type="text" value="https://jipfr.nl/jip.jpg" />
+						</label>
+					</div>
+					<div class="field">
+						<label>
+							<p>When</p>
+							<input id="at" type="datetime-local" value="" />
+						</label>
+					</div>
+				</div>
+
+				<button>Send</button>
+
+				<p class="res">Res:</p>
+			</fieldset>
+		</form>
+
+		<hr>
+
+		<h2>Your subscriptions</h2>
+
+		<table>
+			<thead>
+				<th>Topic</th>
+				<th>Subscribed at</th>
+				<th>Info</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Hoi</td>
+					<td>Hoi</td>
+					<td>Hoi</td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
 
-	<button class="hidden push-notif-button" onclick="subscribeToPush()">Subscribe to new topic</button>
-
-	<form onsubmit="sendForm(event); return false;">
-		<fieldset>
-			<legend>Send notification</legend>
-			<div class="fields">
-				<div class="field">
-					<label>
-						<p>Topic</p>
-						<input id="topic" type="text" value="any" required />
-					</label>
-				</div>
-				<div class="field">
-					<label>
-						<p>Title</p>
-						<input id="title" type="text" value="My Title" required />
-					</label>
-				</div>
-				<div class="field">
-					<label>
-						<p>Body</p>
-						<input id="body" type="text" value="My body" />
-					</label>
-				</div>
-				<div class="field">
-					<label>
-						<p>Icon</p>
-						<input id="icon" type="text" value="https://jipfr.nl/jip.jpg" />
-					</label>
-				</div>
-				<div class="field">
-					<label>
-						<p>When</p>
-						<input id="at" type="datetime-local" value="" />
-					</label>
-				</div>
-			</div>
-
-			<button>Send</button>
-
-			<p class="res">Res:</p>
-		</fieldset>
-	</form>
 
 	<script src="main.js"></script>
 </body>

@@ -1,3 +1,7 @@
+* {
+	box-sizing: border-box;
+}
+
 .hidden::after {
 	display: none;
 }
@@ -27,10 +31,25 @@ label p {
 }
 
 input {
-	box-sizing: border-box;
 	width: 100%;
 }
 
 button {
 	margin-top: 10px;
+}
+
+table, td, th {
+	border: 1px solid black;
+	border-collapse: collapse;
+	text-align: center;
+}
+
+td, th {
+	padding: 5px;
+}
+
+.smol {
+	width: 100px;
+	max-height: 100px;
+	overflow-y: auto;
 }

@@ -44,12 +44,14 @@ function doSubscribe() {
                 const subs = JSON.parse(localStorage.getItem('subscriptions'));
                 subs.push({
                     subscription: obj,
-                    topic: json.topic
+                    topic: json.topic,
+                    at: new Date().toString().split('GMT')[0].trim()
                 });
                 localStorage.setItem('subscriptions', JSON.stringify(subs));
             } else {
                 res.json().then((d) => alert(d.message));
             }
+            renderSubs();
         });
     });
 }
@@ -143,6 +145,20 @@ async function send(form) {
     document.querySelector('.res').textContent = `Res: ${JSON.stringify(res)}`;
 }
 
+function renderSubs() {
+    const tbody = document.querySelector('tbody');
+    tbody.innerHTML = '';
+
+    const subs = JSON.parse(localStorage.getItem('subscriptions'));
+    for (const sub of subs) {
+        tbody.innerHTML += `<tr>
+            <td>${sub.topic}</td>
+            <td>${sub.at}</td>
+            <td class="smol"><textarea readonly>${JSON.stringify(sub.subscription)}</textarea></td>
+        </tr>`;
+    }
+}
+
 // Init
 let now = new Date();
 now.setTime(now.getTime() + 1e3 * 60 * 2);
@@ -152,6 +168,7 @@ document.querySelector('#at').value =
     `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
 
 if (!localStorage.getItem('subscriptions')) localStorage.setItem('subscriptions', '[]');
+renderSubs();
 
 // Service workers
 const sw = true;
