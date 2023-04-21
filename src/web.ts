@@ -58,7 +58,8 @@ app.post('/subscribe', (req, res) => {
     console.info(`New client subscribed to topic "${topic}" at ${toReadableDate()}`);
 
     res.send({
-        status: 200
+        status: 200,
+        topic
     });
 });
 

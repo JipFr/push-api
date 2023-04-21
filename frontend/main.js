@@ -1,28 +1,5 @@
 const host = 'https://push-api.jipfr.nl'; // Make this the API host
 
-// Service workers
-const sw = true;
-if ('serviceWorker' in navigator) {
-    if (sw) {
-        navigator.serviceWorker.register('/sw.js').then(
-            () => null,
-            (err) => {
-                console.error(err);
-            }
-        );
-    } else {
-        navigator.serviceWorker.getRegistrations().then(function (registrations) {
-            for (const registration of registrations) {
-                registration.unregister();
-            }
-        });
-    }
-}
-
-if ('Notification' in window && Notification.permission === 'default') {
-    document.querySelector('.push-notif-button').classList.remove('hidden');
-}
-
 async function subscribeToPush() {
     const button = document.querySelector('.push-notif-button');
     if (window.Notification) {
@@ -49,6 +26,10 @@ function doSubscribe() {
         subscribe(obj).then(async (res) => {
             if (res.ok) {
                 console.info(await res.json());
+                const subs = JSON.parse(localStorage.getItem('subscriptions'));
+                subs.push({
+                    subscription: obj
+                });
             } else {
                 res.json().then((d) => alert(d.message));
             }
@@ -150,3 +131,28 @@ let now = new Date();
 now.setTime(now.getTime() + 1e3 * 60 * 2);
 document.querySelector('#at').value =
     now.toISOString().split('T')[0] + 'T' + `${now.getHours()}:${now.getMinutes()}`;
+
+if (!localStorage.getItem('subscriptions')) localStorage.setItem('subscriptions', '[]');
+
+// Service workers
+const sw = true;
+if ('serviceWorker' in navigator) {
+    if (sw) {
+        navigator.serviceWorker.register('/sw.js').then(
+            () => null,
+            (err) => {
+                console.error(err);
+            }
+        );
+    } else {
+        navigator.serviceWorker.getRegistrations().then(function (registrations) {
+            for (const registration of registrations) {
+                registration.unregister();
+            }
+        });
+    }
+}
+
+if ('Notification' in window && Notification.permission === 'default') {
+    document.querySelector('.push-notif-button').classList.remove('hidden');
+}
