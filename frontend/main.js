@@ -25,11 +25,15 @@ function doSubscribe() {
     getSubscriptionObject().then((obj) => {
         subscribe(obj).then(async (res) => {
             if (res.ok) {
-                console.info(await res.json());
+                const json = await res.json();
+                console.info(json);
+
                 const subs = JSON.parse(localStorage.getItem('subscriptions'));
                 subs.push({
-                    subscription: obj
+                    subscription: obj,
+                    topic: json.topic
                 });
+                localStorage.setItem('subscriptions', JSON.stringify(subs));
             } else {
                 res.json().then((d) => alert(d.message));
             }
@@ -130,7 +134,9 @@ async function send(form) {
 let now = new Date();
 now.setTime(now.getTime() + 1e3 * 60 * 2);
 document.querySelector('#at').value =
-    now.toISOString().split('T')[0] + 'T' + `${now.getHours()}:${now.getMinutes()}`;
+    now.toISOString().split('T')[0] +
+    'T' +
+    `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
 
 if (!localStorage.getItem('subscriptions')) localStorage.setItem('subscriptions', '[]');
 
