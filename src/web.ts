@@ -65,6 +65,7 @@ app.get('/send-notification', async (req, res) => {
     const title = ((req.query.title as string) || '').trim();
     const body = ((req.query.body as string) || '').trim();
     const icon = ((req.query.icon as string) || '').trim();
+    const redirect = ((req.query.redirect as string) || '').trim();
     const at = ((req.query.at as string) || '').trim();
 
     const badgeNum = Number(((req.query.body as string) || '').trim() || NaN);
@@ -104,7 +105,8 @@ app.get('/send-notification', async (req, res) => {
                 title,
                 body,
                 badgeCount,
-                topic
+                topic,
+                redirect
             }
         });
     } else {
@@ -116,7 +118,8 @@ app.get('/send-notification', async (req, res) => {
                     title,
                     body,
                     badgeCount,
-                    icon
+                    icon,
+                    redirect
                 }))
             };
         } catch (err) {

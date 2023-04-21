@@ -1,4 +1,4 @@
-const host = 'https://push-api.jipfr.nl'; // Make this the API host
+const host = ''; // Make this the API host
 
 function cleanTopic(str) {
     return str.replace(/\./g, '_').trim().toLowerCase();
@@ -114,6 +114,7 @@ function sendForm(evt) {
     const title = form.title.value.trim();
     const body = form.body.value.trim();
     const icon = form.icon.value.trim();
+    const redirect = form.redirect.value.trim();
 
     let at = new Date(form.at.value.trim()) || undefined;
     if (Number.isNaN(at.getTime())) at = undefined;
@@ -124,7 +125,8 @@ function sendForm(evt) {
         title,
         icon,
         body,
-        at
+        at,
+        redirect
     });
 }
 
@@ -133,6 +135,7 @@ async function send(form) {
     const title = encodeURIComponent(form.title);
     const body = encodeURIComponent(form.body);
     const icon = encodeURIComponent(form.icon);
+    const redirect = encodeURIComponent(form.redirect);
     const at = form.at ? encodeURIComponent(form.at) : undefined;
 
     if (at && !new Date(at)) {
@@ -140,7 +143,7 @@ async function send(form) {
     }
 
     let res = await fetch(
-        `${host}/send-notification?topic=${topic}&title=${title}&icon=${icon}&body=${body}${
+        `${host}/send-notification?topic=${topic}&title=${title}&icon=${icon}&redirect=${redirect}&body=${body}${
             at ? `&at=${at}` : ''
         }`
     ).then((d) => d.json());

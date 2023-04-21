@@ -20,6 +20,7 @@ export async function sendPushNotification(body: {
     badgeCount?: number;
     topic: string;
     icon?: string;
+    redirect?: string;
 }) {
     if (!body.title) throw new Error("You can't make a push notification without a title");
 
@@ -35,7 +36,8 @@ export async function sendPushNotification(body: {
             title: body.title,
             body: body.body,
             badgeCount: body.badgeCount,
-            icon: body.icon
+            icon: body.icon,
+            redirect: body.redirect
         });
 
         await webPush.setVapidDetails(

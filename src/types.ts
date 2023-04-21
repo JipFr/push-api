@@ -18,6 +18,7 @@ export interface Notification {
         icon?: string;
         badgeCount?: number;
         topic: string;
+        redirect?: string;
     };
 }
 

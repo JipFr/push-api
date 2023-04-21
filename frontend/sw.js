@@ -3,7 +3,8 @@ self.addEventListener('push', (event) => {
     const data = event.data.json();
     if (typeof data?.title === 'string') {
         self.registration.showNotification(data.title, {
-            ...data
+            ...data,
+            data
         });
     }
     if ('setAppBadge' in navigator && typeof data.badgeCount === 'number') {
@@ -13,9 +14,11 @@ self.addEventListener('push', (event) => {
 
 self.addEventListener(
     'notificationclick',
-    function (event) {
-        clients.openWindow('url');
-        event.notification.close();
+    (evt) => {
+        if (evt?.notification?.data?.redirect) {
+            clients.openWindow(evt.notification.data.redirect);
+        }
+        evt.notification.close();
     },
     false
 );
