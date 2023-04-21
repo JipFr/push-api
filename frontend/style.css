@@ -12,6 +12,17 @@
 	margin: 40px auto;
 }
 
+@media (prefers-color-scheme: dark) {
+	body, input, textarea {
+		background: black;
+		color: white;
+	}
+
+	input {
+		border-color: gray;
+	}
+}
+
 form {
 	margin: 30px auto;
 }
