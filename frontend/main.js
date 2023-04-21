@@ -6,14 +6,13 @@ function cleanTopic(str) {
 
 async function subscribeToPush() {
     const button = document.querySelector('.push-notif-button');
+    button.textContent = 'Please hold!...';
     if (window.Notification) {
         if (Notification.permission !== 'granted') {
             await new Promise((resolve) => {
-                button.textContent = 'Please hold!...';
                 Notification.requestPermission(resolve).catch((err) => {
                     alert(err);
                     resolve(err);
-                    button.textContent = 'Subscribe to topic';
                 });
             });
         }
@@ -23,6 +22,7 @@ async function subscribeToPush() {
             alert(Notification.permission);
         }
     }
+    button.textContent = 'Subscribe to topic';
 }
 
 function doSubscribe() {
