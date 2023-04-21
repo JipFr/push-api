@@ -11,7 +11,7 @@ export function configure() {
 }
 
 export function cleanTopic(str: string) {
-    return str.replace(/\./g, '_').trim();
+    return str.replace(/\./g, '_').trim().toLowerCase();
 }
 
 export async function sendPushNotification(body: {

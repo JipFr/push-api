@@ -1,5 +1,9 @@
 const host = 'https://push-api.jipfr.nl'; // Make this the API host
 
+function cleanTopic(str) {
+    return str.replace(/\./g, '_').trim().toLowerCase();
+}
+
 async function subscribeToPush() {
     const button = document.querySelector('.push-notif-button');
     if (window.Notification) {
@@ -9,6 +13,7 @@ async function subscribeToPush() {
                 Notification.requestPermission(resolve).catch((err) => {
                     alert(err);
                     resolve(err);
+                    button.textContent = 'Subscribe to topic';
                 });
             });
         }
@@ -22,8 +27,16 @@ async function subscribeToPush() {
 
 function doSubscribe() {
     console.info('DoSubscribe');
+    const topic = cleanTopic(prompt('What topic do you want to subscribe to?'));
+    const subs = JSON.parse(localStorage.getItem('subscriptions'));
+
+    if (subs.find((t) => t.topic === topic)) {
+        alert('Already subscribed to topic');
+        return;
+    }
+
     getSubscriptionObject().then((obj) => {
-        subscribe(obj).then(async (res) => {
+        subscribe(obj, { topic }).then(async (res) => {
             if (res.ok) {
                 const json = await res.json();
                 console.info(json);
@@ -62,13 +75,13 @@ async function getSubscriptionObject() {
 }
 
 // Send subscription to server
-function subscribe(subscription) {
+function subscribe(subscription, { topic }) {
     console.info('subscribe');
     return fetch(host + '/subscribe', {
         method: 'POST',
         body: JSON.stringify({
             subscription,
-            topic: prompt('What topic?')
+            topic
         }),
         headers: {
             'content-type': 'application/json'
