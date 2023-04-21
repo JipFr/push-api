@@ -10,3 +10,12 @@ self.addEventListener('push', (event) => {
         navigator.setAppBadge(data.badgeCount ?? 0);
     }
 });
+
+self.addEventListener(
+    'notificationclick',
+    function (event) {
+        clients.openWindow('url');
+        event.notification.close();
+    },
+    false
+);

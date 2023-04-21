@@ -114,7 +114,9 @@ function sendForm(evt) {
     const title = form.title.value.trim();
     const body = form.body.value.trim();
     const icon = form.icon.value.trim();
-    const at = new Date(form.at.value.trim()) || undefined;
+
+    let at = new Date(form.at.value.trim()) || undefined;
+    if (Number.isNaN(at.getTime())) at = undefined;
 
     send({
         form,
@@ -131,7 +133,7 @@ async function send(form) {
     const title = encodeURIComponent(form.title);
     const body = encodeURIComponent(form.body);
     const icon = encodeURIComponent(form.icon);
-    const at = encodeURIComponent(form.at);
+    const at = form.at ? encodeURIComponent(form.at) : undefined;
 
     if (at && !new Date(at)) {
         alert('Invalid date');

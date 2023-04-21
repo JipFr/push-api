@@ -70,7 +70,7 @@ app.get('/send-notification', async (req, res) => {
     const badgeNum = Number(((req.query.body as string) || '').trim() || NaN);
     const badgeCount = Number.isNaN(badgeNum) ? badgeNum : undefined;
 
-    if (at && !new Date(at)) {
+    if (at && Number.isNaN(new Date(at).getTime())) {
         res.status(403);
         res.json({
             status: 403,
