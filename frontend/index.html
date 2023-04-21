@@ -8,65 +8,61 @@
 	<meta name="mobile-web-app-capable" content="yes">
 	<meta name="viewport"
 		content="width=device-width, initial-scale=1, user-scalable=1, minimal-ui, viewport-fit=cover">
+
+	<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-	<button class="hidden push-notif-button" onclick="subscribeToPush()">Subscribe to push notification</button>
-	<button onclick="send()">Send push notification</button>
+	<div class="container">
 
-	<style>
-		.hidden::after {
-			content: '(technically disabled)'
-		}
-	</style>
+	</div>
 
-	<script>
-		const host = 'https://push-api.jipfr.nl' // Make this the API host
+	<button class="hidden push-notif-button" onclick="subscribeToPush()">Subscribe to new topic</button>
 
-		// Service workers
-		const sw = true;
-		if ("serviceWorker" in navigator) {
-			if (sw) {
-				navigator.serviceWorker.register("/sw.js").then(
-					() => { },
-					(err) => {
-						console.error(err);
-					}
-				);
-			} else {
-				navigator.serviceWorker.getRegistrations().then(function (registrations) {
-					for (const registration of registrations) {
-						registration.unregister();
-					}
-				});
-			}
-		}
+	<form onsubmit="sendForm(event); return false;">
+		<fieldset>
+			<legend>Send notification</legend>
+			<div class="fields">
+				<div class="field">
+					<label>
+						<p>Topic</p>
+						<input id="topic" type="text" value="any" required />
+					</label>
+				</div>
+				<div class="field">
+					<label>
+						<p>Title</p>
+						<input id="title" type="text" value="My Title" required />
+					</label>
+				</div>
+				<div class="field">
+					<label>
+						<p>Body</p>
+						<input id="body" type="text" value="My body" />
+					</label>
+				</div>
+				<div class="field">
+					<label>
+						<p>Icon</p>
+						<input id="icon" type="text" value="https://jipfr.nl/jip.jpg" />
+					</label>
+				</div>
+				<div class="field">
+					<label>
+						<p>When</p>
+						<input id="at" type="datetime-local" value="" />
+					</label>
+				</div>
+			</div>
 
-		async function send() {
-			const topic = encodeURIComponent(prompt("Topic"))
-			const title = encodeURIComponent(prompt("Title"))
-			const body = encodeURIComponent(prompt("Body"))
-			const icon = "https://jipfr.nl/jip-head.png"
+			<button>Send</button>
 
-			let now = new Date()
-			now.setTime(now.getTime() + 1e3 * 60 * 2)
-			const at = prompt("At? Enter falsy value") ? now.toISOString() : ''
+			<p class="res">Res:</p>
+		</fieldset>
+	</form>
 
-			await fetch(`${host}/send-notification?topic=${topic}&title=${title}&icon=${icon}&body=${body}${at ? `&at=${at}` : ''}`)
-		}
-
-	</script>
-
-	<script>
-
-
-		if ("Notification" in window && Notification.permission === "default") {
-			document.querySelector(".push-notif-button").classList.remove("hidden");
-		}
-
-
-	</script>
+	<script src="main.js"></script>
 </body>
 
 </html>
