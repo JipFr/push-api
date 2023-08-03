@@ -5,7 +5,7 @@ import bodyParser from 'body-parser';
 import { cleanTopic } from './push';
 import { sendPushNotification } from './push';
 import notificationScheduler from './scheduler';
-import { NotifWithId } from './types';
+import { NotifWithId, PushClient } from './types';
 import { toReadableDate } from './util';
 
 const app = express();
@@ -44,11 +44,21 @@ app.post('/subscribe', (req, res) => {
 
     // Store in db
     const dbKey = `clients.topics.${topic}`;
-    const clients = db.get(dbKey) || [];
+    let clients = db.get(dbKey) || [];
+
     clients.push({
         ...body,
         addedAt: new Date().toISOString()
     }); // Validation is for babies
+
+    // Remove duplicate clients
+    const seen: string[] = [];
+    clients = clients.filter((client: PushClient) => {
+        if (seen.includes(client.subscription.endpoint)) return false;
+        seen.push(client.subscription.endpoint);
+        return true;
+    });
+
     db.set(dbKey, clients);
     db.store(false);
 

@@ -22,10 +22,10 @@ export async function sendPushNotification(body: {
     icon?: string;
     redirect?: string;
 }) {
-    if (!body.title) throw new Error("You can't make a push notification without a title");
+    if (!body.title) return new Error("You can't make a push notification without a title");
 
     const clients = db.get(`clients.topics.${cleanTopic(body.topic)}`);
-    if (!clients) throw new Error('No clients for topic ' + cleanTopic(body.topic));
+    if (!clients) return new Error('No clients for topic ' + cleanTopic(body.topic));
 
     console.info(
         `Sending notification to ${clients.length} clients at ${toReadableDate()}: ${body.title}`
